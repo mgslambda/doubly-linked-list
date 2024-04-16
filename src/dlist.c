@@ -45,21 +45,42 @@ void dl_insert(DList *dl, size_t index, int val) {
     if (n == NULL)
         _throw_error("Could not allocate memory for list node");
     n->val = val;
+    Node *current = dl->header->next;
+    for (size_t i = 0; i < index; i++)
+        current = current->next;
+    n->next = current;
+    n->prev = current->prev;
+    current->prev->next = n;
+    current->prev = n;
+    dl->size++;
+}
+
+int dl_remove(DList *dl, size_t index) {
+    if (index >= dl_size(dl))
+        _throw_error("Index out of bounds");
+    Node *current = dl->header->next;
+    for (size_t i = 0; i < index; i++)
+        current = current->next;
+    int val = current->val;
+    current->prev->next = current->next;
+    current->next->prev = current->prev;
+    free(current);
+    dl->size--;
+    return val;
+}
+
+void dl_print(DList *dl) {
     if (dl_is_empty(dl)) {
-        n->prev = dl->header;
-        n->next = dl->trailer;
-        dl->header->next = n;
-        dl->trailer->prev = n;
+        puts("NULL");
     } else {
         Node *current = dl->header->next;
-        for (size_t i = 0; i < index; i++)
+        printf("%s", "NULL<-");
+        while (current != dl->trailer->prev) {
+            printf("|%d|<->", current->val);
             current = current->next;
-        n->next = current;
-        n->prev = current->prev;
-        current->prev->next = n;
-        current->prev = n;
+        }
+        printf("|%d|->NULL\n", current->val);
     }
-    dl->size++;
 }
 
 static void _throw_error(char *msg) {
