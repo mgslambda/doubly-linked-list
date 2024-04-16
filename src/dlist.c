@@ -38,6 +38,30 @@ int dl_get(DList *dl, size_t index) {  // TODO: Depending on index, start traver
     return current->val;
 }
 
+void dl_insert(DList *dl, size_t index, int val) {
+    if (index > dl_size(dl))
+        _throw_error("Index out of bounds");
+    Node *n = malloc(sizeof *n);
+    if (n == NULL)
+        _throw_error("Could not allocate memory for list node");
+    n->val = val;
+    if (dl_is_empty(dl)) {
+        n->prev = dl->header;
+        n->next = dl->trailer;
+        dl->header->next = n;
+        dl->trailer->prev = n;
+    } else {
+        Node *current = dl->header->next;
+        for (size_t i = 0; i < index; i++)
+            current = current->next;
+        n->next = current;
+        n->prev = current->prev;
+        current->prev->next = n;
+        current->prev = n;
+    }
+    dl->size++;
+}
+
 static void _throw_error(char *msg) {
     fprintf(stderr, "%s\n", msg);
     exit(EXIT_FAILURE);
