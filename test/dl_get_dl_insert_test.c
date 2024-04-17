@@ -20,5 +20,7 @@ int main() {
     // insert at arbitrary location
     dl_insert(dl, 1, 'j');
     printf("The value at position 1 is '%c'\n", dl_get(dl, 1));
+
+    dl_del(&dl);
 }
 

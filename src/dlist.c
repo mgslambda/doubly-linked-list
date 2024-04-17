@@ -27,7 +27,7 @@ size_t dl_is_empty(DList *dl) {
     return dl_size(dl) == 0;
 }
 
-int dl_get(DList *dl, size_t index) {  // TODO: Depending on index, start traversing from head or tail so that the number of elements traversed is at most n/2
+int dl_get(DList *dl, size_t index) {
     if (index >= dl_size(dl))
         _throw_error("dl_get: Index out of bounds");
     if (index == dl_size(dl) - 1)  // Constant time access to tail element
@@ -81,6 +81,18 @@ void dl_print(DList *dl) {
         }
         printf("|%d|->NULL\n", current->val);
     }
+}
+
+void dl_del(DList **dl) {
+    while((*dl)->header->next != (*dl)->trailer) {
+        Node *current = (*dl)->header->next;
+        (*dl)->header->next = (*dl)->header->next->next;
+        free(current);
+    }
+    free((*dl)->header);
+    free((*dl)->trailer);
+    free(*dl);
+    *dl = NULL;
 }
 
 static void _throw_error(char *msg) {
