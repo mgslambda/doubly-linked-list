@@ -36,5 +36,7 @@ int main() {
     dl_print(dl);
     dl_remove(dl, 0);
     dl_print(dl);
+
+    dl_del(&dl);
 }
 
